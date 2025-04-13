@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Next Service Countdown</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      text-align: center;
+      font-family: sans-serif;
+      margin-top: 50px;
+    }
+    .countdown {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+    .live-button {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .live {
+      background-color: red;
+      color: white;
+    }
+    .not-live {
+      background-color: gray;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Next Service Starts In:</h1>
+  <div class="countdown" id="countdown">Loading...</div>
+  <a id="liveButton" class="live-button not-live" href="#" target="_blank">Service Not Online</a>
+
+  <script>
+    function getNextServiceTime() {
+      const now = new Date();
+      const day = now.getDay();
+      const services = [
+        new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 30, 0),
+        new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 30, 0)
+      ];
+      if (day !== 0) return null;
+      for (let service of services) {
+        if (service > now) return service;
+      }
+      return null;
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const nextService = getNextServiceTime();
+      const countdown = document.getElementById('countdown');
+      const liveButton = document.getElementById('liveButton');
+
+      if (!nextService) {
+        countdown.innerText = "No More Services Today";
+        liveButton.innerText = "Service Not Online";
+        liveButton.className = "live-button not-live";
+        liveButton.href = "#";
+        return;
+      }
+
+      const diff = nextService - now;
+
+      if (diff <= 0) {
+        countdown.innerText = "We're Live!";
+        liveButton.innerText = "We Are Live →";
+        liveButton.className = "live-button live";
+        liveButton.href = "https://live.versaillesumc.org";
+        return;
+      }
+
+      const hrs = Math.floor(diff / 1000 / 60 / 60);
+      const mins = Math.floor((diff / 1000 / 60) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
+
+      countdown.innerText = `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      liveButton.innerText = "Service Not Online";
+      liveButton.className = "live-button not-live";
+      liveButton.href = "#";
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+
+</body>
+</html>
