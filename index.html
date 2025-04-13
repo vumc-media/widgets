@@ -5,23 +5,24 @@
   <title>VUMC Service Countdown</title>
   <style>
     body {
-      background: black;
+      background: transparent;
       color: white;
       text-align: center;
       font-family: sans-serif;
-      margin-top: 50px;
+      margin: 0;
+      padding: 20px;
     }
     .countdown {
-      font-size: 2.5em;
-      margin-bottom: 20px;
+      font-size: 2em;
+      margin-bottom: 10px;
     }
     .label {
-      font-size: 1.5em;
+      font-size: 1.2em;
       margin-bottom: 10px;
     }
     .live-button {
-      padding: 15px 30px;
-      font-size: 1.2em;
+      padding: 10px 20px;
+      font-size: 1em;
       border: none;
       border-radius: 8px;
       text-decoration: none;
@@ -38,49 +39,55 @@
 </head>
 <body>
 
-  <h1 id="serviceLabel">Next Service Starts In:</h1>
   <div class="label" id="serviceInfo">Loading...</div>
   <div class="countdown" id="countdown">Loading...</div>
   <a id="liveButton" class="live-button not-live" href="#" target="_blank">Service Not Online</a>
 
   <script>
-    function getNextServiceTime() {
+    function getNextService() {
       const now = new Date();
       const day = now.getDay();
-      const baseDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const services = [
-        { label: "Traditional Worship", time: new Date(baseDate.getTime() + 9.5 * 3600000) }, // 9:30 AM
-        { label: "Contemporary Worship", time: new Date(baseDate.getTime() + 10.5 * 3600000) } // 10:30 AM
-      ];
-      if (day !== 0) return null;
-      for (let service of services) {
-        if (service.time > now) return service;
+      const base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      let sunday = new Date(base);
+      if (day !== 0) {
+        // If not Sunday, set to upcoming Sunday
+        sunday.setDate(sunday.getDate() + (7 - day));
       }
-      return null;
+
+      const services = [
+        { label: "Traditional Worship", time: new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate(), 9, 30, 0) },
+        { label: "Contemporary Worship", time: new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate(), 10, 30, 0) }
+      ];
+
+      for (let service of services) {
+        if (service.time > now) {
+          return service;
+        }
+      }
+
+      // If both are past, return next week's first service
+      let nextSunday = new Date(sunday);
+      nextSunday.setDate(nextSunday.getDate() + 7);
+      return {
+        label: "Traditional Worship",
+        time: new Date(nextSunday.getFullYear(), nextSunday.getMonth(), nextSunday.getDate(), 9, 30, 0)
+      };
     }
 
     function updateCountdown() {
       const now = new Date();
-      const nextService = getNextServiceTime();
+      const nextService = getNextService();
       const countdown = document.getElementById('countdown');
       const liveButton = document.getElementById('liveButton');
       const serviceInfo = document.getElementById('serviceInfo');
-
-      if (!nextService) {
-        countdown.innerText = "No More Services Today";
-        serviceInfo.innerText = "";
-        liveButton.innerText = "Service Not Online";
-        liveButton.className = "live-button not-live";
-        liveButton.href = "#";
-        return;
-      }
-
-      const diff = nextService.time - now;
 
       const serviceDate = nextService.time.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
       const serviceTime = nextService.time.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 
       serviceInfo.innerText = `${nextService.label} – ${serviceDate} at ${serviceTime} EST`;
+
+      const diff = nextService.time - now;
 
       if (diff <= 0) {
         countdown.innerText = "We're Live!";
