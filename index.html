@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Next Service Countdown</title>
+  <title>VUMC Service Countdown</title>
   <style>
     body {
       background: black;
@@ -14,6 +14,10 @@
     .countdown {
       font-size: 2.5em;
       margin-bottom: 20px;
+    }
+    .label {
+      font-size: 1.5em;
+      margin-bottom: 10px;
     }
     .live-button {
       padding: 15px 30px;
@@ -34,7 +38,8 @@
 </head>
 <body>
 
-  <h1>Next Service Starts In:</h1>
+  <h1 id="serviceLabel">Next Service Starts In:</h1>
+  <div class="label" id="serviceInfo">Loading...</div>
   <div class="countdown" id="countdown">Loading...</div>
   <a id="liveButton" class="live-button not-live" href="#" target="_blank">Service Not Online</a>
 
@@ -42,13 +47,14 @@
     function getNextServiceTime() {
       const now = new Date();
       const day = now.getDay();
+      const baseDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const services = [
-        new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 30, 0),
-        new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 30, 0)
+        { label: "Traditional Worship", time: new Date(baseDate.getTime() + 9.5 * 3600000) }, // 9:30 AM
+        { label: "Contemporary Worship", time: new Date(baseDate.getTime() + 10.5 * 3600000) } // 10:30 AM
       ];
       if (day !== 0) return null;
       for (let service of services) {
-        if (service > now) return service;
+        if (service.time > now) return service;
       }
       return null;
     }
@@ -58,16 +64,23 @@
       const nextService = getNextServiceTime();
       const countdown = document.getElementById('countdown');
       const liveButton = document.getElementById('liveButton');
+      const serviceInfo = document.getElementById('serviceInfo');
 
       if (!nextService) {
         countdown.innerText = "No More Services Today";
+        serviceInfo.innerText = "";
         liveButton.innerText = "Service Not Online";
         liveButton.className = "live-button not-live";
         liveButton.href = "#";
         return;
       }
 
-      const diff = nextService - now;
+      const diff = nextService.time - now;
+
+      const serviceDate = nextService.time.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+      const serviceTime = nextService.time.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+
+      serviceInfo.innerText = `${nextService.label} – ${serviceDate} at ${serviceTime} EST`;
 
       if (diff <= 0) {
         countdown.innerText = "We're Live!";
