@@ -4,20 +4,25 @@
   <meta charset="UTF-8" />
   <title>Livestream Status</title>
   <style>
-    body {
+    html, body {
+      height: 100%;
+      margin: 0;
       background: transparent;
-      text-align: center;
       font-family: sans-serif;
-      padding: 20px;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .container {
       background-color: rgba(255, 255, 255, 0.85);
       color: black;
       padding: 20px;
       border-radius: 15px;
-      display: inline-block;
       font-weight: bold;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
     }
     .title {
       font-size: 1.6em;
@@ -53,7 +58,7 @@
 <body>
   <div class="container">
     <div class="title">Join Us Online</div>
-    <div class="subtitle">Traditional Worship – 9:30 AM | Contemporary – 10:30 AM (EST)</div>
+    <div class="subtitle">Traditional – 9:30 AM | Contemporary – 10:30 AM (EST)</div>
     <a id="liveButton" class="live-button">Stream Offline</a>
   </div>
 
@@ -69,13 +74,11 @@
         .then(data => {
           const button = document.getElementById("liveButton");
           if (data.items && data.items.length > 0) {
-            // Stream is live
             button.innerText = "We Are Live";
             button.href = "https://live.versaillesumc.org";
             button.classList.add("live");
             button.setAttribute("target", "_blank");
           } else {
-            // Not live
             button.innerText = "Stream Offline";
             button.href = "#";
             button.classList.remove("live");
@@ -88,7 +91,7 @@
     }
 
     checkLiveStream();
-    setInterval(checkLiveStream, 30000); // refresh every 30 seconds
+    setInterval(checkLiveStream, 30000);
   </script>
 </body>
 </html>
