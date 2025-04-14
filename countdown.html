@@ -6,31 +6,38 @@
   <style>
     body {
       background: transparent;
-      color: white;
       text-align: center;
       font-family: sans-serif;
       padding: 20px;
     }
     .container {
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: white;
+      color: black;
       padding: 20px;
       border-radius: 15px;
       display: inline-block;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .title {
+      font-size: 1.8em;
+      margin-bottom: 15px;
     }
     .label {
-      font-size: 1.5em;
+      font-size: 1.3em;
       margin-bottom: 10px;
     }
     .countdown {
-      font-size: 2.5em;
+      font-size: 2.2em;
       margin-bottom: 20px;
     }
     .live-button {
-      padding: 10px 20px;
+      padding: 10px 25px;
       font-size: 1.2em;
       border: none;
       border-radius: 6px;
       text-decoration: none;
+      font-weight: bold;
     }
     .live {
       background-color: red;
@@ -44,6 +51,7 @@
 </head>
 <body>
   <div class="container">
+    <div class="title">Next Live Stream</div>
     <div class="label" id="streamInfo">Checking YouTube schedule...</div>
     <div class="countdown" id="countdown">Loading...</div>
     <a id="liveButton" class="live-button not-live" href="#" target="_blank">Stream Not Active</a>
