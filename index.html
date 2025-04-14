@@ -13,16 +13,16 @@
       padding: 20px;
     }
     .countdown {
-      font-size: 2em;
-      margin-bottom: 10px;
+      font-size: 3em;
+      margin-bottom: 30px;
     }
     .label {
-      font-size: 1.2em;
-      margin-bottom: 10px;
+      font-size: 2em;
+      margin-bottom: 15px;
     }
     .live-button {
-      padding: 10px 20px;
-      font-size: 1em;
+      padding: 15px 30px;
+      font-size: 1.4em;
       border: none;
       border-radius: 8px;
       text-decoration: none;
@@ -51,7 +51,6 @@
 
       let sunday = new Date(base);
       if (day !== 0) {
-        // If not Sunday, set to upcoming Sunday
         sunday.setDate(sunday.getDate() + (7 - day));
       }
 
@@ -66,50 +65,7 @@
         }
       }
 
-      // If both are past, return next week's first service
+      // If both are past, return next week's Traditional
       let nextSunday = new Date(sunday);
       nextSunday.setDate(nextSunday.getDate() + 7);
-      return {
-        label: "Traditional Worship",
-        time: new Date(nextSunday.getFullYear(), nextSunday.getMonth(), nextSunday.getDate(), 9, 30, 0)
-      };
-    }
-
-    function updateCountdown() {
-      const now = new Date();
-      const nextService = getNextService();
-      const countdown = document.getElementById('countdown');
-      const liveButton = document.getElementById('liveButton');
-      const serviceInfo = document.getElementById('serviceInfo');
-
-      const serviceDate = nextService.time.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
-      const serviceTime = nextService.time.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-
-      serviceInfo.innerText = `${nextService.label} – ${serviceDate} at ${serviceTime} EST`;
-
-      const diff = nextService.time - now;
-
-      if (diff <= 0) {
-        countdown.innerText = "We're Live!";
-        liveButton.innerText = "We Are Live →";
-        liveButton.className = "live-button live";
-        liveButton.href = "https://live.versaillesumc.org";
-        return;
-      }
-
-      const hrs = Math.floor(diff / 1000 / 60 / 60);
-      const mins = Math.floor((diff / 1000 / 60) % 60);
-      const secs = Math.floor((diff / 1000) % 60);
-
-      countdown.innerText = `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      liveButton.innerText = "Service Not Online";
-      liveButton.className = "live-button not-live";
-      liveButton.href = "#";
-    }
-
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-  </script>
-
-</body>
-</html>
+      return
