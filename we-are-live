@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Livestream Status</title>
+  <style>
+    body {
+      background: transparent;
+      text-align: center;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .container {
+      background-color: rgba(255, 255, 255, 0.85);
+      color: black;
+      padding: 20px;
+      border-radius: 15px;
+      display: inline-block;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .title {
+      font-size: 1.6em;
+      margin-bottom: 5px;
+    }
+    .subtitle {
+      font-size: 1em;
+      margin-bottom: 20px;
+    }
+    .live-button {
+      padding: 12px 30px;
+      font-size: 1.2em;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-block;
+      pointer-events: none;
+      opacity: 0.6;
+      background-color: gray;
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .live {
+      background-color: red;
+      color: white;
+      pointer-events: auto;
+      opacity: 1;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">Join Us Online</div>
+    <div class="subtitle">Traditional Worship – 9:30 AM | Contemporary – 10:30 AM (EST)</div>
+    <a id="liveButton" class="live-button">Stream Offline</a>
+  </div>
+
+  <script>
+    const apiKey = "AIzaSyC4ET2to5RHI45b5x4od9pbJaI79RYJXfo";
+    const channelId = "UC_svgodM3blLqWEBQ5yNjmA";
+
+    function checkLiveStream() {
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${apiKey}`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const button = document.getElementById("liveButton");
+          if (data.items && data.items.length > 0) {
+            // Stream is live
+            button.innerText = "We Are Live";
+            button.href = "https://live.versaillesumc.org";
+            button.classList.add("live");
+            button.setAttribute("target", "_blank");
+          } else {
+            // Not live
+            button.innerText = "Stream Offline";
+            button.href = "#";
+            button.classList.remove("live");
+            button.removeAttribute("target");
+          }
+        })
+        .catch(error => {
+          console.error("Error checking live status:", error);
+        });
+    }
+
+    checkLiveStream();
+    setInterval(checkLiveStream, 30000); // refresh every 30 seconds
+  </script>
+</body>
+</html>
