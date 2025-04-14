@@ -2,82 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Facility Rental Request – Versailles UMC</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Church Center Form Modal</title>
   <script src="https://js.churchcenter.com/modal/v1"></script>
   <style>
     body {
       font-family: sans-serif;
-      background: transparent;
+      background-color: #f5f5f5;
       text-align: center;
       padding: 5vw;
-      margin: 0;
-    }
-
-    .card {
-      background-color: white;
-      color: black;
-      padding: 6vw;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      max-width: 500px;
-      margin: auto;
-      box-sizing: border-box;
     }
 
     h2 {
-      margin-top: 0;
-      font-size: 5vw;
+      margin-bottom: 0.5em;
     }
 
     p {
-      font-size: 4vw;
-      margin: 10px 0 20px;
+      margin-bottom: 2em;
     }
 
-    .btn {
-      margin-top: 20px;
-      background-color: #006400;
+    .modal-button {
+      padding: 1em 2em;
+      background-color: #007bff;
       color: white;
-      padding: 12px 24px;
       border: none;
-      border-radius: 6px;
-      font-size: 4vw;
+      border-radius: 8px;
+      font-size: 1.1em;
       cursor: pointer;
+      transition: background-color 0.3s;
       text-decoration: none;
       display: inline-block;
-      font-weight: bold;
-      max-width: 100%;
     }
 
-    @media (min-width: 600px) {
-      h2 { font-size: 1.8em; }
-      p { font-size: 1.1em; }
-      .btn { font-size: 1.1em; }
+    .modal-button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <div class="card" id="content">
-    <h2>Facility Rental Request</h2>
-    <p>Interested in using our church space for your event? Click below to complete our facility rental request form.</p>
-    <a 
-      href="https://versaillesumc.churchcenter.com/people/forms/779435" 
-      data-open-in-church-center-modal="true" 
-      class="btn">
-      Request to Rent →
-    </a>
-  </div>
 
-  <script>
-    function sendHeight() {
-      const height = document.documentElement.scrollHeight;
-      window.parent.postMessage({ type: "adjustHeight", height: height }, "*");
-    }
+  <h2>Sign Up Form</h2>
+  <p>Click the button below to fill out our Church Center form.</p>
+  
+  <a 
+    href="https://versaillesumc.churchcenter.com/people/forms/779435" 
+    class="modal-button"
+    data-open-in-church-center-modal="true">
+    Fill Out the Form
+  </a>
 
-    window.addEventListener("load", sendHeight);
-    window.addEventListener("resize", sendHeight);
-    setTimeout(sendHeight, 100);
-  </script>
 </body>
 </html>
