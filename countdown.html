@@ -50,7 +50,7 @@
   </div>
 
   <script>
-    const apiKey = "AIzaSyB4ugv94opMdX2J5vzleAo6cwLOWlOCw2k";
+    const apiKey = "AIzaSyC4ET2to5RHI45b5x4od9pbJaI79RYJXfo";
     const channelId = "UC_svgodM3blLqWEBQ5yNjmA";
 
     let countdownInterval;
@@ -65,7 +65,6 @@
             const videoId = data.items[0].id.videoId;
             getStreamDetails(videoId);
           } else {
-            // fallback to Sunday at 9:30 AM
             fallbackToSunday();
           }
         })
@@ -98,7 +97,7 @@
     function fallbackToSunday() {
       const now = new Date();
       let sunday = new Date(now);
-      sunday.setDate(sunday.getDate() + (7 - now.getDay()) % 7);
+      sunday.setDate(sunday.getDate() + ((7 - now.getDay()) % 7));
       sunday.setHours(9, 30, 0, 0);
       if (sunday < now) sunday.setDate(sunday.getDate() + 7);
 
