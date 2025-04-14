@@ -38,14 +38,13 @@
       border-radius: 6px;
       text-decoration: none;
       font-weight: bold;
+      display: none; /* Hidden until stream is live */
     }
     .live {
       background-color: red;
       color: white;
-    }
-    .not-live {
-      background-color: gray;
-      color: white;
+      display: inline-block;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -54,7 +53,7 @@
     <div class="title">Next Live Stream</div>
     <div class="label" id="streamInfo">Checking YouTube schedule...</div>
     <div class="countdown" id="countdown">Loading...</div>
-    <a id="liveButton" class="live-button not-live" href="#" target="_blank">Stream Not Active</a>
+    <a id="liveButton" class="live-button" target="_blank">Watch Now →</a>
   </div>
 
   <script>
@@ -89,12 +88,11 @@
             const stream = data.items[0];
             const title = stream.snippet.title;
             const startTime = new Date(stream.liveStreamingDetails.scheduledStartTime);
-            const streamURL = `https://www.youtube.com/watch?v=${videoId}`;
 
             document.getElementById("streamInfo").innerText =
               `${title} – ${startTime.toLocaleString(undefined, { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`;
-            updateCountdown(startTime, streamURL);
-            countdownInterval = setInterval(() => updateCountdown(startTime, streamURL), 1000);
+            updateCountdown(startTime);
+            countdownInterval = setInterval(() => updateCountdown(startTime), 1000);
           } else {
             fallbackToSunday();
           }
@@ -111,11 +109,11 @@
 
       document.getElementById("streamInfo").innerText =
         `Sunday Worship – ${sunday.toLocaleString(undefined, { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })} EST`;
-      updateCountdown(sunday, "#");
-      countdownInterval = setInterval(() => updateCountdown(sunday, "#"), 1000);
+      updateCountdown(sunday);
+      countdownInterval = setInterval(() => updateCountdown(sunday), 1000);
     }
 
-    function updateCountdown(startTime, streamURL) {
+    function updateCountdown(startTime) {
       const now = new Date();
       const diff = startTime - now;
 
@@ -125,8 +123,9 @@
       if (diff <= 0) {
         countdown.innerText = "We're Live!";
         liveButton.innerText = "Watch Now →";
-        liveButton.href = streamURL;
+        liveButton.href = "https://live.versaillesumc.org";
         liveButton.className = "live-button live";
+        liveButton.style.display = "inline-block";
         clearInterval(countdownInterval);
         return;
       }
@@ -139,9 +138,7 @@
 
       countdown.innerText =
         `${days}d : ${hours.toString().padStart(2, '0')}h : ${minutes.toString().padStart(2, '0')}m : ${seconds.toString().padStart(2, '0')}s`;
-      liveButton.innerText = "Stream Not Active";
-      liveButton.className = "live-button not-live";
-      liveButton.href = "#";
+      liveButton.style.display = "none"; // hide button when stream not live
     }
 
     fetchUpcomingStream();
