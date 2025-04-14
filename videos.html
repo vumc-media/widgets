@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Latest YouTube Videos</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: transparent;
+      font-family: sans-serif;
+      color: white;
+      text-align: center;
+    }
+    #videoContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .video {
+      width: 320px;
+      height: 180px;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    #viewMoreBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #cc0000;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Latest Videos</h2>
+  <div id="videoContainer"></div>
+  <button id="viewMoreBtn">View More</button>
+
+  <script>
+    const apiKey = "AIzaSyB4ugv94opMdX2J5vzleAo6cwLOWlOCw2k";
+    const channelId = "UC_svgodM3blLqWEBQ5yNjmA";
+    const videoContainer = document.getElementById('videoContainer');
+    const viewMoreBtn = document.getElementById('viewMoreBtn');
+    let nextPageToken = "";
+    let loadedCount = 0;
+
+    function fetchVideos(loadMore = false) {
+      fetch(`https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=10&pageToken=${nextPageToken}`)
+        .then(response => response.json())
+        .then(data => {
+          nextPageToken = data.nextPageToken || "";
+          data.items.forEach(item => {
+            if (item.id.kind === "youtube#video") {
+              const videoId = item.id.videoId;
+              const div = document.createElement("div");
+              div.className = "video";
+              div.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+              videoContainer.appendChild(div);
+            }
+          });
+          loadedCount += 10;
+          if (!nextPageToken || loadedCount >= 20) {
+            viewMoreBtn.style.display = "none";
+          }
+          if (loadMore) {
+            viewMoreBtn.scrollIntoView({ behavior: "smooth", block: "end" });
+          }
+        })
+        .catch(err => {
+          console.error("YouTube API error:", err);
+        });
+    }
+
+    viewMoreBtn.addEventListener("click", () => {
+      fetchVideos(true);
+    });
+
+    // Load initial videos
+    fetchVideos();
+  </script>
+</body>
+</html>
