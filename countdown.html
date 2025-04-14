@@ -2,47 +2,40 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>VUMC Service Countdown</title>
+  <title>Upcoming Livestream Countdown</title>
   <style>
     body {
       background: transparent;
       color: white;
       text-align: center;
       font-family: sans-serif;
-      margin: 0;
       padding: 20px;
     }
-
-    .countdown-container {
+    .container {
       background-color: rgba(0, 0, 0, 0.6);
-      border-radius: 15px;
       padding: 20px;
+      border-radius: 15px;
       display: inline-block;
     }
-
-    .countdown {
-      font-size: 2.5em;
-      margin-bottom: 30px;
-    }
-
     .label {
       font-size: 1.5em;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
-
+    .countdown {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
     .live-button {
-      padding: 15px 30px;
+      padding: 10px 20px;
       font-size: 1.2em;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       text-decoration: none;
     }
-
     .live {
       background-color: red;
       color: white;
     }
-
     .not-live {
       background-color: gray;
       color: white;
@@ -50,86 +43,83 @@
   </style>
 </head>
 <body>
-
-  <div class="countdown-container">
-    <div class="label" id="serviceInfo">Loading...</div>
+  <div class="container">
+    <div class="label" id="streamInfo">Checking YouTube schedule...</div>
     <div class="countdown" id="countdown">Loading...</div>
-    <a id="liveButton" class="live-button not-live" href="#" target="_blank">Service Not Online</a>
+    <a id="liveButton" class="live-button not-live" href="#" target="_blank">Stream Not Active</a>
   </div>
 
   <script>
-    window.onload = function () {
-      function getNextService() {
-        const now = new Date();
-        const day = now.getDay();
-        const base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const apiKey = "AIzaSyB4ugv94opMdX2J5vzleAo6cwLOWlOCw2k";
+    const channelId = "UC_svgodM3blLqWEBQ5yNjmA";
 
-        let sunday = new Date(base);
-        if (day !== 0) {
-          sunday.setDate(sunday.getDate() + (7 - day));
-        }
+    let countdownInterval;
 
-        const services = [
-          { label: "Traditional Worship", time: new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate(), 9, 30, 0) },
-          { label: "Contemporary Worship", time: new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate(), 10, 30, 0) }
-        ];
+    function fetchUpcomingStream() {
+      const endpoint = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&eventType=upcoming&key=${apiKey}`;
 
-        for (let service of services) {
-          if (service.time > now) {
-            return service;
+      fetch(endpoint)
+        .then(res => res.json())
+        .then(data => {
+          if (data.items && data.items.length > 0) {
+            const videoId = data.items[0].id.videoId;
+            getStreamDetails(videoId);
+          } else {
+            document.getElementById("streamInfo").innerText = "No upcoming streams scheduled.";
+            document.getElementById("countdown").innerText = "--";
+            document.getElementById("liveButton").className = "live-button not-live";
           }
-        }
-
-        let nextSunday = new Date(sunday);
-        nextSunday.setDate(nextSunday.getDate() + 7);
-        return {
-          label: "Traditional Worship",
-          time: new Date(nextSunday.getFullYear(), nextSunday.getMonth(), nextSunday.getDate(), 9, 30, 0)
-        };
-      }
-
-      function updateCountdown() {
-        const now = new Date();
-        const nextService = getNextService();
-        const countdown = document.getElementById('countdown');
-        const liveButton = document.getElementById('liveButton');
-        const serviceInfo = document.getElementById('serviceInfo');
-
-        const serviceDate = nextService.time.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
-        const serviceTime = nextService.time.toLocaleTimeString(undefined, {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true
         });
+    }
 
-        serviceInfo.innerText = `${nextService.label} – ${serviceDate} at ${serviceTime} EST`;
+    function getStreamDetails(videoId) {
+      const endpoint = `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails,snippet&id=${videoId}&key=${apiKey}`;
 
-        const diff = nextService.time - now;
+      fetch(endpoint)
+        .then(res => res.json())
+        .then(data => {
+          if (data.items && data.items.length > 0) {
+            const stream = data.items[0];
+            const title = stream.snippet.title;
+            const startTime = new Date(stream.liveStreamingDetails.scheduledStartTime);
+            const streamURL = `https://www.youtube.com/watch?v=${videoId}`;
 
-        if (diff <= 0) {
-          countdown.innerText = "We're Live!";
-          liveButton.innerText = "We Are Live →";
-          liveButton.className = "live-button live";
-          liveButton.href = "https://live.versaillesumc.org";
-          return;
-        }
+            document.getElementById("streamInfo").innerText = `${title} – ${startTime.toLocaleString(undefined, { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`;
+            updateCountdown(startTime, streamURL);
+            countdownInterval = setInterval(() => updateCountdown(startTime, streamURL), 1000);
+          }
+        });
+    }
 
-        const totalSeconds = Math.floor(diff / 1000);
-        const days = Math.floor(totalSeconds / 86400);
-        const hours = Math.floor((totalSeconds % 86400) / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
+    function updateCountdown(startTime, streamURL) {
+      const now = new Date();
+      const diff = startTime - now;
 
-        countdown.innerText = `${days}d : ${hours.toString().padStart(2, '0')}h : ${minutes.toString().padStart(2, '0')}m : ${seconds.toString().padStart(2, '0')}s`;
-        liveButton.innerText = "Service Not Online";
-        liveButton.className = "live-button not-live";
-        liveButton.href = "#";
+      const countdown = document.getElementById("countdown");
+      const liveButton = document.getElementById("liveButton");
+
+      if (diff <= 0) {
+        countdown.innerText = "We're Live!";
+        liveButton.innerText = "Watch Now →";
+        liveButton.href = streamURL;
+        liveButton.className = "live-button live";
+        clearInterval(countdownInterval);
+        return;
       }
 
-      setInterval(updateCountdown, 1000);
-      updateCountdown();
-    };
-  </script>
+      const totalSeconds = Math.floor(diff / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
 
+      countdown.innerText = `${days}d : ${hours.toString().padStart(2, '0')}h : ${minutes.toString().padStart(2, '0')}m : ${seconds.toString().padStart(2, '0')}s`;
+      liveButton.innerText = "Stream Not Active";
+      liveButton.className = "live-button not-live";
+      liveButton.href = "#";
+    }
+
+    fetchUpcomingStream();
+  </script>
 </body>
 </html>
