@@ -65,11 +65,11 @@
             const videoId = data.items[0].id.videoId;
             getStreamDetails(videoId);
           } else {
-            document.getElementById("streamInfo").innerText = "No upcoming streams scheduled.";
-            document.getElementById("countdown").innerText = "--";
-            document.getElementById("liveButton").className = "live-button not-live";
+            // fallback to Sunday at 9:30 AM
+            fallbackToSunday();
           }
-        });
+        })
+        .catch(() => fallbackToSunday());
     }
 
     function getStreamDetails(videoId) {
@@ -84,11 +84,28 @@
             const startTime = new Date(stream.liveStreamingDetails.scheduledStartTime);
             const streamURL = `https://www.youtube.com/watch?v=${videoId}`;
 
-            document.getElementById("streamInfo").innerText = `${title} – ${startTime.toLocaleString(undefined, { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`;
+            document.getElementById("streamInfo").innerText =
+              `${title} – ${startTime.toLocaleString(undefined, { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`;
             updateCountdown(startTime, streamURL);
             countdownInterval = setInterval(() => updateCountdown(startTime, streamURL), 1000);
+          } else {
+            fallbackToSunday();
           }
-        });
+        })
+        .catch(() => fallbackToSunday());
+    }
+
+    function fallbackToSunday() {
+      const now = new Date();
+      let sunday = new Date(now);
+      sunday.setDate(sunday.getDate() + (7 - now.getDay()) % 7);
+      sunday.setHours(9, 30, 0, 0);
+      if (sunday < now) sunday.setDate(sunday.getDate() + 7);
+
+      document.getElementById("streamInfo").innerText =
+        `Sunday Worship – ${sunday.toLocaleString(undefined, { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })} EST`;
+      updateCountdown(sunday, "#");
+      countdownInterval = setInterval(() => updateCountdown(sunday, "#"), 1000);
     }
 
     function updateCountdown(startTime, streamURL) {
@@ -113,7 +130,8 @@
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const seconds = totalSeconds % 60;
 
-      countdown.innerText = `${days}d : ${hours.toString().padStart(2, '0')}h : ${minutes.toString().padStart(2, '0')}m : ${seconds.toString().padStart(2, '0')}s`;
+      countdown.innerText =
+        `${days}d : ${hours.toString().padStart(2, '0')}h : ${minutes.toString().padStart(2, '0')}m : ${seconds.toString().padStart(2, '0')}s`;
       liveButton.innerText = "Stream Not Active";
       liveButton.className = "live-button not-live";
       liveButton.href = "#";
