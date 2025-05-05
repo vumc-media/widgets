@@ -1,0 +1,16 @@
+{
+  "short_name": "ChurchApp",
+  "name": "Your Church App",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#317EFB"
+}
