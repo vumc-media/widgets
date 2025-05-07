@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>STANDING STRONG IN THE FACE OF OPPOSITION — NEHEMIAH 4</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -30,6 +31,7 @@
       background-color: #4CAF50;
       color: white;
       padding: 10px 20px;
+      margin-right: 10px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
@@ -70,6 +72,7 @@
   <input type="text" name="q4" placeholder="Type your answer here">
 
   <button type="button" onclick="copyNotes()">Copy My Notes</button>
+  <button type="button" onclick="downloadPDF()">Download My Notes as PDF</button>
 </form>
 
 <script>
@@ -84,6 +87,33 @@ function copyNotes() {
   navigator.clipboard.writeText(text)
     .then(() => alert('Notes copied to clipboard!'))
     .catch(() => alert('Failed to copy notes.'));
+}
+
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  let y = 10;
+  doc.setFontSize(12);
+  doc.text('STANDING STRONG IN THE FACE OF OPPOSITION — NEHEMIAH 4', 10, y);
+  y += 10;
+
+  const form = document.getElementById('sermonForm');
+  Array.from(form.elements).forEach(el => {
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      const label = el.previousElementSibling.innerText;
+      const value = el.value || '[No Answer]';
+      doc.text(label, 10, y);
+      y += 7;
+      doc.text(value, 10, y);
+      y += 10;
+      if (y > 270) { // start a new page if near bottom
+        doc.addPage();
+        y = 10;
+      }
+    }
+  });
+
+  doc.save('sermon-notes.pdf');
 }
 </script>
 
