@@ -8,12 +8,15 @@
       font-family: Arial, sans-serif;
       padding: 20px;
       background: #f9f9f9;
-    }
-    h2 {
       color: #333;
+    }
+    h2, h3 {
+      color: #2c3e50;
     }
     label {
       font-weight: bold;
+      display: block;
+      margin-top: 10px;
     }
     input, textarea {
       width: 100%;
@@ -21,6 +24,7 @@
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      font-size: 14px;
     }
     button {
       background-color: #4CAF50;
@@ -29,9 +33,15 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 16px;
     }
     button:hover {
       background-color: #45a049;
+    }
+    .point {
+      margin: 15px 0 5px;
+      font-weight: bold;
+      color: #34495e;
     }
   </style>
 </head>
@@ -40,19 +50,23 @@
 <h2>STANDING STRONG IN THE FACE OF OPPOSITION — NEHEMIAH 4</h2>
 
 <form id="sermonForm">
-  <label>1. Where have you underestimated opposition?</label>
+  <div class="point">1. We underestimate opposition and overestimate comfort.</div>
+  <label>Where have you underestimated opposition?</label>
   <input type="text" name="q1" placeholder="Type your answer here">
 
-  <label>2. Where has advancement invited opposition in your life?</label>
+  <div class="point">2. “Advancement always invites opposition.”</div>
+  <label>Where has advancement invited opposition in your life?</label>
   <input type="text" name="q2" placeholder="Type your answer here">
 
-  <label>3a. What did Sanballat and Tobiah say about the Jews?</label>
+  <div class="point">3. God uses opposition to strengthen our resolve and showcase His power.</div>
+  <label>What did Sanballat and Tobiah say about the Jews? (Nehemiah 4:1–6)</label>
   <input type="text" name="q3a" placeholder="Type your answer here">
 
-  <label>3b. How has God used hard times to strengthen you?</label>
+  <label>How has God used hard times to strengthen you?</label>
   <textarea name="q3b" placeholder="Type your reflection here"></textarea>
 
-  <label>4. Where do you need to stand strong this week?</label>
+  <div class="point">4. Stand strong. Work hard. Trust God.</div>
+  <label>Where do you need to stand strong this week?</label>
   <input type="text" name="q4" placeholder="Type your answer here">
 
   <button type="button" onclick="copyNotes()">Copy My Notes</button>
