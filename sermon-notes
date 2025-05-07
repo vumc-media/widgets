@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>STANDING STRONG IN THE FACE OF OPPOSITION — NEHEMIAH 4</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h2 {
+      color: #333;
+    }
+    label {
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      margin: 5px 0 15px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+<h2>STANDING STRONG IN THE FACE OF OPPOSITION — NEHEMIAH 4</h2>
+
+<form id="sermonForm">
+  <label>1. Where have you underestimated opposition?</label>
+  <input type="text" name="q1" placeholder="Type your answer here">
+
+  <label>2. Where has advancement invited opposition in your life?</label>
+  <input type="text" name="q2" placeholder="Type your answer here">
+
+  <label>3a. What did Sanballat and Tobiah say about the Jews?</label>
+  <input type="text" name="q3a" placeholder="Type your answer here">
+
+  <label>3b. How has God used hard times to strengthen you?</label>
+  <textarea name="q3b" placeholder="Type your reflection here"></textarea>
+
+  <label>4. Where do you need to stand strong this week?</label>
+  <input type="text" name="q4" placeholder="Type your answer here">
+
+  <button type="button" onclick="copyNotes()">Copy My Notes</button>
+</form>
+
+<script>
+function copyNotes() {
+  const form = document.getElementById('sermonForm');
+  let text = '';
+  Array.from(form.elements).forEach(el => {
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      text += el.previousElementSibling.innerText + '\n' + el.value + '\n\n';
+    }
+  });
+  navigator.clipboard.writeText(text)
+    .then(() => alert('Notes copied to clipboard!'))
+    .catch(() => alert('Failed to copy notes.'));
+}
+</script>
+
+</body>
+</html>
