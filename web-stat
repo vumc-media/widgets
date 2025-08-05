@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Web-Stat Tracker</title>
+</head>
+<body style="text-align:center; margin:0; padding:0;">
+<!-- begin code v 7.0 -->
+<span id="wts2196654"></span>
+<script type="text/javascript">
+    (function() {
+        var wts = document.createElement('script');
+        wts.async = true;
+        wts.src = 'https://app.ardalio.com/wts7.js';
+        wts.onload = function() { wtsl7(2196654, 1); };
+        document.head.appendChild(wts);
+    })();
+</script>
+<noscript>
+    <img src="https://app.ardalio.com/7/1/2196654.png" alt="Web-Stat" />
+</noscript>
+<!-- end code v 7.0 -->
+</body>
+</html>
